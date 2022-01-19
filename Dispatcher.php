@@ -15,7 +15,7 @@ class Dispatcher
         Router::parse($this->request->url, $this->request);
         
         $controller = $this->loadController();
-        // var_dump ($controller);die;
+        // echo $this->request->action;
 
         call_user_func_array([$controller, $this->request->action], $this->request->params);
     }

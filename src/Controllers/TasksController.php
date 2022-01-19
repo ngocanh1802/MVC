@@ -3,16 +3,16 @@ namespace SRC\Controllers;
 use SRC\Core\Controller;
 use SRC\Models\Task;
 use SRC\Models\TaskRepository;
+use SRC\Models\TaskModel;
 class TasksController extends Controller
 {
     function index()
     {
-        // require(ROOT . 'Models/Task.php');
-
         $tasks = new TaskRepository();
 
         $d['tasks'] = $tasks->getAll();
         $this->set($d);
+        // print_r($this);
         $this->render("index");
     }
 
@@ -20,13 +20,13 @@ class TasksController extends Controller
     {
         if (isset($_POST["title"]))
         {
-            // require(ROOT . 'Models/Task.php');
-
-            $task= new Task();
-
-            if ($task->create($_POST["title"], $_POST["description"]))
-            {
-                header("Location: " . WEBROOT . "tasks/index");
+            $taskModel= new TaskModel();
+            $taskModel ->setTitle($_POST["title"]);
+            $taskModel->setDescription($_POST["description"]);
+            $taskModel->setCreated_at(date('Y-m-d H:i:s'));
+            $taskRepository = new TaskRepository();
+            if($taskRepository->add($taskModel)){
+                header("Location: " . WEBROOT . "public/tasks/index");
             }
         }
 
@@ -35,30 +35,32 @@ class TasksController extends Controller
 
     function edit($id)
     {
-        // require(ROOT . 'Models/Task.php');
-        $task= new Task();
 
-        $d["task"] = $task->showTask($id);
+        $taskRepo = new TaskRepository();
+        $d["task"] = $taskRepo->getById($id);
 
         if (isset($_POST["title"]))
         {
-            if ($task->edit($id, $_POST["title"], $_POST["description"]))
+            $taskModel = new TaskModel;
+            $taskModel->setTitle($_POST["title"]);
+            $taskModel->setDescription($_POST["description"]);
+            $taskModel->setUpdated_at(date('Y-m-d H:i:s'));
+
+            if ($taskRepo->edit($taskModel))
             {
-                header("Location: " . WEBROOT . "tasks/index");
+                header("Location: " . WEBROOT . "public/tasks/index");
             }
         }
         $this->set($d);
         $this->render("edit");
     }
 
-    function delete($id)
+    public function delete($id)
     {
-        // require(ROOT . 'Models/Task.php');
-
-        $task = new Task();
-        if ($task->delete($id))
+        $taskRepository = new TaskRepository();
+        if ($taskRepository->delete($id))
         {
-            header("Location: " . WEBROOT . "tasks/index");
+            header("Location: " . WEBROOT . "public/tasks/index");
         }
     }
 }

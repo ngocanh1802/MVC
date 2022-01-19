@@ -5,6 +5,6 @@ use SRC\Core\ResourceModel;
 class TaskResourceModel extends ResourceModel
 {
     public function __construct(){
-        _init("tasks", "taskId", new TaskModel);
+        $this->_init("tasks", "Id", new TaskModel);
     }
 }

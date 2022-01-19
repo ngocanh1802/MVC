@@ -8,6 +8,7 @@ namespace SRC\Core;
         function set($d)
         {
             $this->vars = array_merge($this->vars, $d);
+            // print_r($this);
         }
 
         function render($filename)
